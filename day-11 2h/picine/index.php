@@ -1,0 +1,130 @@
+<?php
+    session_start();
+
+    require_once('check_auth.php');
+
+
+    require_once('connection_db.php');
+
+
+ 
+ 
+?>
+
+
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+  </head>
+  <body>
+    
+
+  
+
+        
+      <?php
+        if ($_SESSION['status'] == 0) {
+          echo '
+          <div class="container mt-5">
+            <div class="alert alert-danger">
+              Thank you for your registration, wait for the system admin approval. <br/>
+
+              <a href="logout.php">Logout</a>
+            </div>
+          </div>
+          
+          ';
+        }
+
+      ?>
+
+
+
+        <?php $article = null;  if (isset($_GET['article'])) {
+          $article = $_GET['article'];
+        } ?>
+
+
+      <?php include_once ('./components/navbar.php');?>
+
+
+      <div class="container mt-5">
+          <div class="row">
+                <div class="col-sm-12">
+
+                    <img src="r.png"  class="w-100"/>
+
+                    <h3 class="text-center mt-3">Ce site est notre projet piscine
+</h3>
+
+
+                </div>
+
+
+          </div>
+
+          
+          <div class="row">
+            <div class="col-sm-3">
+            
+            <?php include_once ('./components/side_menu.php');?>
+
+            </div>
+
+
+            <div class="col-sm-9">
+
+
+
+              <h3>Search Result</h3>
+
+
+              <div class="row">
+              <?php
+                $req = $article == null ? 'SELECT * FROM `articles`,categories WHERE articles.category_id = categories.id_category' : 'SELECT * FROM `articles`,categories WHERE articles.category_id = categories.id_category AND articles.category_id = '.$article;
+              
+                $reqArtciles = $con->prepare($req);
+
+                $reqArtciles->execute(array());
+
+
+                while ($data = $reqArtciles->fetch()) {
+                  echo '
+                  <div class="col-sm-4 mb-3">
+                    <div class="card w-100">
+                      <img src="'.$data['photo_article'].'" class="card-img-top w-100" alt="...">
+                      <div class="card-body">
+                        <h5 class="card-title">'.$data['label_article'].'</h5>
+                      
+                        <a href="article.php?id='.$data['id_article'].'" class="btn btn-primary">more details</a>
+                      </div>
+                    </div>
+                    
+                  </div>
+                  ';
+                }
+
+
+              
+              ?>
+              </div>
+
+
+            </div>
+          </div>
+      </div>
+
+
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+  </body>
+</html>
